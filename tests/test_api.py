@@ -62,3 +62,41 @@ def test_prediction_history():
     data = response.json()
 
     assert isinstance(data, list)
+
+
+def test_get_prediction():
+    payload = {
+        "influent_bod5": 300,
+        "influent_cod": 570,
+        "influent_tss": 250,
+        "flow_m3_day": 1050,
+        "dissolved_oxygen": 2.1,
+        "temperature": 27,
+        "hrt_hours": 8,
+    }
+
+    create_response = client.post("/predict", json=payload)
+
+    assert create_response.status_code == 200
+
+    prediction_id = create_response.json()["id"]
+
+    response = client.get(f"/predictions/{prediction_id}")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["id"] == prediction_id
+    assert data["influent_bod5"] == 300
+    assert data["predicted_effluent_bod5"] > 0
+
+
+def test_get_prediction_not_found():
+    response = client.get("/predictions/999999")
+
+    assert response.status_code == 404
+
+    data = response.json()
+
+    assert data["detail"] == "Prediction not found"

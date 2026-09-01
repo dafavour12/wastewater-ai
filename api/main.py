@@ -2,7 +2,8 @@ from datetime import datetime
 from pathlib import Path
 
 import joblib
-from fastapi import Depends, FastAPI
+import pandas as pd
+from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from api.database.database import Base, SessionLocal, engine
@@ -145,15 +146,26 @@ def predict(
     db=Depends(get_db),
 ):
 
-    features = [[
-        data.influent_bod5,
-        data.influent_cod,
-        data.influent_tss,
-        data.flow_m3_day,
-        data.dissolved_oxygen,
-        data.temperature,
-        data.hrt_hours,
-    ]]
+    features = pd.DataFrame(
+        [[
+            data.influent_bod5,
+            data.influent_cod,
+            data.influent_tss,
+            data.flow_m3_day,
+            data.dissolved_oxygen,
+            data.temperature,
+            data.hrt_hours,
+        ]],
+        columns=[
+            "influent_bod5",
+            "influent_cod",
+            "influent_tss",
+            "flow_m3_day",
+            "dissolved_oxygen",
+            "temperature",
+            "hrt_hours",
+        ],
+    )
 
     prediction = model.predict(features)[0]
 
@@ -213,3 +225,31 @@ def get_predictions(db=Depends(get_db)):
         }
         for prediction in predictions
     ]
+
+
+# --------------------------------------------------
+# Single prediction endpoint
+# --------------------------------------------------
+
+@app.get(
+    "/predictions/{prediction_id}",
+    response_model=PredictionHistoryResponse,
+)
+def get_prediction(
+    prediction_id: int,
+    db=Depends(get_db),
+):
+
+    prediction = (
+        db.query(Prediction)
+        .filter(Prediction.id == prediction_id)
+        .first()
+    )
+
+    if prediction is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Prediction not found",
+        )
+
+    return prediction
