@@ -164,3 +164,35 @@ def test_predict_negative_temperature():
     data = response.json()
 
     assert "detail" in data
+def test_model_info():
+    response = client.get("/model")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["model_type"] == "RandomForestRegressor"
+    assert data["target"] == "effluent_bod5"
+    assert data["target_unit"] == "mg/L"
+
+
+def test_model_info_features_and_metrics():
+    response = client.get("/model")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data["features"]) == 7
+
+    assert "influent_bod5" in data["features"]
+    assert "influent_cod" in data["features"]
+    assert "influent_tss" in data["features"]
+    assert "flow_m3_day" in data["features"]
+    assert "dissolved_oxygen" in data["features"]
+    assert "temperature" in data["features"]
+    assert "hrt_hours" in data["features"]
+
+    assert data["metrics"]["mae"] == 1.40
+    assert data["metrics"]["rmse"] == 1.48
+    assert data["metrics"]["r2"] == 0.93

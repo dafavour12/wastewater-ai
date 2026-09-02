@@ -148,9 +148,31 @@ def health():
         "version": "0.1.0",
     }
 
+
+@app.get("/model")
+def model_info():
+    return {
+        "model_type": "RandomForestRegressor",
+        "target": "effluent_bod5",
+        "target_unit": "mg/L",
+        "features": [
+            "influent_bod5",
+            "influent_cod",
+            "influent_tss",
+            "flow_m3_day",
+            "dissolved_oxygen",
+            "temperature",
+            "hrt_hours",
+        ],
+        "metrics": {
+            "mae": 1.40,
+            "rmse": 1.48,
+            "r2": 0.93,
+        },
+    }
 # --------------------------------------------------
 # Prediction endpoint
-# --------------------------------------------------
+# ------------------------------------------------
 
 
 @app.post(
