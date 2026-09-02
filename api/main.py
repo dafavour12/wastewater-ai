@@ -140,9 +140,18 @@ def root():
     }
 
 
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
+        "service": "wastewater-ai-api",
+        "version": "0.1.0",
+    }
+
 # --------------------------------------------------
 # Prediction endpoint
 # --------------------------------------------------
+
 
 @app.post(
     "/predict",
@@ -203,6 +212,7 @@ def predict(
 # --------------------------------------------------
 # Prediction history endpoint
 # --------------------------------------------------
+
 
 @app.get(
     "/predictions",

@@ -16,6 +16,18 @@ def test_root():
     assert data["message"] == "Wastewater AI API is running"
 
 
+def test_health():
+    response = client.get("/health")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["status"] == "healthy"
+    assert data["service"] == "wastewater-ai-api"
+    assert data["version"] == "0.1.0"
+
+
 def test_predict_valid_input():
     payload = {
         "influent_bod5": 300,
@@ -132,3 +144,23 @@ def test_prediction_stats_values():
         <= data["average_predicted_bod5"]
         <= data["maximum_predicted_bod5"]
     )
+
+
+def test_predict_negative_temperature():
+    payload = {
+        "influent_bod5": 300,
+        "influent_cod": 570,
+        "influent_tss": 250,
+        "flow_m3_day": 1050,
+        "dissolved_oxygen": 2.1,
+        "temperature": -5,
+        "hrt_hours": 8,
+    }
+
+    response = client.post("/predict", json=payload)
+
+    assert response.status_code == 422
+
+    data = response.json()
+
+    assert "detail" in data
