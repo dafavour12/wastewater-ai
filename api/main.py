@@ -10,10 +10,6 @@ from api.database.database import Base, SessionLocal, engine
 from api.database.models import Prediction
 
 
-# --------------------------------------------------
-# Application setup
-# --------------------------------------------------
-
 app = FastAPI(
     title="Wastewater AI API",
     description="AI-powered wastewater treatment prediction API",
@@ -25,33 +21,20 @@ app = FastAPI(
 Base.metadata.create_all(bind=engine)
 
 
-# --------------------------------------------------
-# Database dependency
-# --------------------------------------------------
-
 def get_db():
     db = SessionLocal()
-
     try:
         yield db
     finally:
         db.close()
 
 
-# --------------------------------------------------
-# Load trained ML model
-# --------------------------------------------------
-
+# Load trained machine-learning model
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 MODEL_PATH = BASE_DIR / "models" / "wastewater_bod5_model.joblib"
 
 model = joblib.load(MODEL_PATH)
 
-
-# --------------------------------------------------
-# Input schema
-# --------------------------------------------------
 
 class WastewaterInput(BaseModel):
     influent_bod5: float = Field(
@@ -59,38 +42,32 @@ class WastewaterInput(BaseModel):
         ge=0,
         description="Influent BOD5 in mg/L",
     )
-
     influent_cod: float = Field(
         ...,
         ge=0,
         description="Influent COD in mg/L",
     )
-
     influent_tss: float = Field(
         ...,
         ge=0,
         description="Influent TSS in mg/L",
     )
-
     flow_m3_day: float = Field(
         ...,
         gt=0,
         description="Wastewater flow rate in m³/day",
     )
-
     dissolved_oxygen: float = Field(
         ...,
         ge=0,
         description="Dissolved oxygen in mg/L",
     )
-
     temperature: float = Field(
         ...,
         ge=0,
         le=60,
         description="Wastewater temperature in °C",
     )
-
     hrt_hours: float = Field(
         ...,
         gt=0,
@@ -98,14 +75,11 @@ class WastewaterInput(BaseModel):
     )
 
 
-# --------------------------------------------------
-# Response schemas
-# --------------------------------------------------
-
 class PredictionResponse(BaseModel):
     id: int
     predicted_effluent_bod5: float
     unit: str
+    status: str
 
 
 class PredictionHistoryResponse(BaseModel):
@@ -118,6 +92,7 @@ class PredictionHistoryResponse(BaseModel):
     temperature: float
     hrt_hours: float
     predicted_effluent_bod5: float
+    status: str
     created_at: datetime
 
 
@@ -128,9 +103,21 @@ class PredictionStatsResponse(BaseModel):
     maximum_predicted_bod5: float
 
 
-# --------------------------------------------------
-# Health endpoint
-# --------------------------------------------------
+def classify_bod5(predicted_bod5: float) -> str:
+    """
+    Classify predicted effluent BOD5 into a simple interpretation category.
+    """
+    if predicted_bod5 <= 20:
+        return "low"
+
+    if predicted_bod5 <= 30:
+        return "moderate"
+
+    if predicted_bod5 <= 50:
+        return "high"
+
+    return "very_high"
+
 
 @app.get("/")
 def root():
@@ -170,20 +157,10 @@ def model_info():
             "r2": 0.93,
         },
     }
-# --------------------------------------------------
-# Prediction endpoint
-# ------------------------------------------------
 
 
-@app.post(
-    "/predict",
-    response_model=PredictionResponse,
-)
-def predict(
-    data: WastewaterInput,
-    db=Depends(get_db),
-):
-
+@app.post("/predict", response_model=PredictionResponse)
+def predict(data: WastewaterInput, db=Depends(get_db)):
     features = pd.DataFrame(
         [[
             data.influent_bod5,
@@ -222,18 +199,14 @@ def predict(
     db.commit()
     db.refresh(prediction_record)
 
+    predicted_bod5 = round(float(prediction), 2)
+
     return {
         "id": prediction_record.id,
-        "predicted_effluent_bod5": round(
-            float(prediction),
-            2,
-        ),
+        "predicted_effluent_bod5": predicted_bod5,
         "unit": "mg/L",
+        "status": classify_bod5(predicted_bod5),
     }
-
-# --------------------------------------------------
-# Prediction history endpoint
-# --------------------------------------------------
 
 
 @app.get(
@@ -241,7 +214,6 @@ def predict(
     response_model=list[PredictionHistoryResponse],
 )
 def get_predictions(db=Depends(get_db)):
-
     predictions = (
         db.query(Prediction)
         .order_by(Prediction.created_at.desc())
@@ -259,22 +231,18 @@ def get_predictions(db=Depends(get_db)):
             "temperature": prediction.temperature,
             "hrt_hours": prediction.hrt_hours,
             "predicted_effluent_bod5": prediction.predicted_effluent_bod5,
+            "status": classify_bod5(prediction.predicted_effluent_bod5),
             "created_at": prediction.created_at,
         }
         for prediction in predictions
     ]
 
 
-# --------------------------------------------------
-# Prediction statistics endpoint
-# --------------------------------------------------
-
 @app.get(
     "/predictions/stats",
     response_model=PredictionStatsResponse,
 )
 def get_prediction_stats(db=Depends(get_db)):
-
     predictions = db.query(Prediction).all()
 
     if not predictions:
@@ -307,10 +275,6 @@ def get_prediction_stats(db=Depends(get_db)):
     }
 
 
-# --------------------------------------------------
-# Single prediction endpoint
-# --------------------------------------------------
-
 @app.get(
     "/predictions/{prediction_id}",
     response_model=PredictionHistoryResponse,
@@ -319,7 +283,6 @@ def get_prediction(
     prediction_id: int,
     db=Depends(get_db),
 ):
-
     prediction = (
         db.query(Prediction)
         .filter(Prediction.id == prediction_id)
@@ -332,4 +295,16 @@ def get_prediction(
             detail="Prediction not found",
         )
 
-    return prediction
+    return {
+        "id": prediction.id,
+        "influent_bod5": prediction.influent_bod5,
+        "influent_cod": prediction.influent_cod,
+        "influent_tss": prediction.influent_tss,
+        "flow_m3_day": prediction.flow_m3_day,
+        "dissolved_oxygen": prediction.dissolved_oxygen,
+        "temperature": prediction.temperature,
+        "hrt_hours": prediction.hrt_hours,
+        "predicted_effluent_bod5": prediction.predicted_effluent_bod5,
+        "status": classify_bod5(prediction.predicted_effluent_bod5),
+        "created_at": prediction.created_at,
+    }

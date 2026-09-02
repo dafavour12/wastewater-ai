@@ -1,9 +1,10 @@
 from fastapi.testclient import TestClient
 
-from api.main import app
+from api.main import app, classify_bod5
 
 
 client = TestClient(app)
+
 
 
 def test_root():
@@ -48,6 +49,13 @@ def test_predict_valid_input():
     assert "id" in data
     assert "predicted_effluent_bod5" in data
     assert data["unit"] == "mg/L"
+    assert "status" in data
+    assert data["status"] in {
+        "low",
+        "moderate",
+        "high",
+        "very_high",
+    }
 
 
 def test_predict_invalid_input():
@@ -164,6 +172,8 @@ def test_predict_negative_temperature():
     data = response.json()
 
     assert "detail" in data
+
+
 def test_model_info():
     response = client.get("/model")
 
@@ -196,3 +206,14 @@ def test_model_info_features_and_metrics():
     assert data["metrics"]["mae"] == 1.40
     assert data["metrics"]["rmse"] == 1.48
     assert data["metrics"]["r2"] == 0.93
+
+
+def test_classify_bod5():
+
+    assert classify_bod5(10) == "low"
+    assert classify_bod5(20) == "low"
+    assert classify_bod5(25) == "moderate"
+    assert classify_bod5(30) == "moderate"
+    assert classify_bod5(40) == "high"
+    assert classify_bod5(50) == "high"
+    assert classify_bod5(60) == "very_high"
