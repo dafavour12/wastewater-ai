@@ -80,6 +80,8 @@ class PredictionResponse(BaseModel):
     predicted_effluent_bod5: float
     unit: str
     status: str
+    recommendation: str
+    limitations: str
 
 
 class PredictionHistoryResponse(BaseModel):
@@ -117,6 +119,55 @@ def classify_bod5(predicted_bod5: float) -> str:
         return "high"
 
     return "very_high"
+
+
+def get_treatment_recommendation(predicted_bod5: float) -> str:
+    """
+    Provide an operational treatment recommendation based on
+    the predicted effluent BOD5.
+
+    These recommendations are engineering guidance only and
+    are not regulatory compliance determinations.
+    """
+    status = classify_bod5(predicted_bod5)
+
+    recommendations = {
+        "low": (
+            "Predicted effluent BOD5 is relatively low. "
+            "Continue routine process monitoring and verify "
+            "performance with laboratory measurements."
+        ),
+        "moderate": (
+            "Predicted effluent BOD5 is moderate. "
+            "Monitor aeration, dissolved oxygen, biological "
+            "process conditions, and hydraulic performance."
+        ),
+        "high": (
+            "Predicted effluent BOD5 is elevated. "
+            "Review organic loading, aeration, sludge age, "
+            "dissolved oxygen, and hydraulic conditions."
+        ),
+        "very_high": (
+            "Predicted effluent BOD5 is very high. "
+            "Investigate possible process upset, overloading, "
+            "oxygen limitation, inadequate retention time, "
+            "or other treatment-process deficiencies."
+        ),
+    }
+
+    return recommendations[status]
+
+
+def get_prediction_limitations() -> str:
+    """
+    Return the general limitations associated with the AI prediction.
+    """
+    return (
+        "This AI prediction is an estimate and should not be used as "
+        "a substitute for laboratory testing, engineering judgement, "
+        "process monitoring, or applicable regulatory compliance "
+        "assessment."
+    )
 
 
 @app.get("/")
@@ -206,6 +257,8 @@ def predict(data: WastewaterInput, db=Depends(get_db)):
         "predicted_effluent_bod5": predicted_bod5,
         "unit": "mg/L",
         "status": classify_bod5(predicted_bod5),
+        "recommendation": get_treatment_recommendation(predicted_bod5),
+        "limitations": get_prediction_limitations(),
     }
 
 
