@@ -121,6 +121,13 @@ class PredictionHistoryResponse(BaseModel):
     created_at: datetime
 
 
+class PredictionStatsResponse(BaseModel):
+    total_predictions: int
+    average_predicted_bod5: float
+    minimum_predicted_bod5: float
+    maximum_predicted_bod5: float
+
+
 # --------------------------------------------------
 # Health endpoint
 # --------------------------------------------------
@@ -193,7 +200,6 @@ def predict(
         "unit": "mg/L",
     }
 
-
 # --------------------------------------------------
 # Prediction history endpoint
 # --------------------------------------------------
@@ -225,6 +231,48 @@ def get_predictions(db=Depends(get_db)):
         }
         for prediction in predictions
     ]
+
+
+# --------------------------------------------------
+# Prediction statistics endpoint
+# --------------------------------------------------
+
+@app.get(
+    "/predictions/stats",
+    response_model=PredictionStatsResponse,
+)
+def get_prediction_stats(db=Depends(get_db)):
+
+    predictions = db.query(Prediction).all()
+
+    if not predictions:
+        return {
+            "total_predictions": 0,
+            "average_predicted_bod5": 0.0,
+            "minimum_predicted_bod5": 0.0,
+            "maximum_predicted_bod5": 0.0,
+        }
+
+    values = [
+        prediction.predicted_effluent_bod5
+        for prediction in predictions
+    ]
+
+    return {
+        "total_predictions": len(values),
+        "average_predicted_bod5": round(
+            sum(values) / len(values),
+            2,
+        ),
+        "minimum_predicted_bod5": round(
+            min(values),
+            2,
+        ),
+        "maximum_predicted_bod5": round(
+            max(values),
+            2,
+        ),
+    }
 
 
 # --------------------------------------------------
