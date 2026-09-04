@@ -1,0 +1,39 @@
+WASTEWATER AI - V2.5 PROCESS ANOMALY DETECTION
+============================================================
+
+Raw observations: 527
+Valid target observations: 504
+Process variables: 22
+
+Offline event counts:
+  BOD5 >= 30: 35
+  BOD5 >= 50: 6
+  BOD5 >= 75: 6
+
+Important methodology:
+  Process variables only were used as anomaly inputs.
+  Effluent variables were excluded from detector inputs.
+  Effluent BOD5 was used only as an offline evaluation target.
+
+Best BOD5 >= 50 detector:
+  Detector: Isolation Forest 1%
+  Precision: 0.667
+  Recall: 0.667
+  F1: 0.667
+  False-positive rate: 0.004
+
+Best BOD5 >= 75 detector:
+  Detector: Isolation Forest 1%
+  Precision: 0.667
+  Recall: 0.667
+  F1: 0.667
+  False-positive rate: 0.004
+
+Interpretation:
+  This analysis tests whether process measurements
+  contain useful abnormal-regime information.
+  Results should not be treated as production alarm
+  thresholds until validated on independent data.
+
+Deployment status:
+  NO-GO pending independent validation.

@@ -1,0 +1,34 @@
+WASTEWATER AI - V2.5 EXTREME-CASE INVESTIGATION
+============================================================
+
+Raw observations: 527
+Valid target observations: 504
+
+EFFLUENT BOD5 DISTRIBUTION
+----------------------------------------
+Minimum: 3.0000
+Median: 18.0000
+Mean: 19.9881
+90th percentile: 28.0000
+95th percentile: 31.0000
+99th percentile: 82.8900
+Maximum: 320.0000
+
+EXTREME COUNTS
+----------------------------------------
+>=30 mg/L: 35
+>=50 mg/L: 6
+>=75 mg/L: 6
+>=100 mg/L: 5
+
+EXTREME OBSERVATIONS
+----------------------------------------
+Rows with BOD5 >=50 mg/L: 6
+
+Extreme target values:
+  index D-13/3/90: 152.0000 mg/L
+  index D-14/3/90: 320.0000 mg/L
+  index D-15/3/90: 84.0000 mg/L
+  index D-17/7/91: 105.0000 mg/L
+  index D-18/7/91: 101.0000 mg/L
+  index D-19/7/91: 101.0000 mg/L

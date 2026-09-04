@@ -273,3 +273,77 @@ def test_prediction_recommendation_and_limitations():
     assert "limitations" in data
     assert isinstance(data["limitations"], str)
     assert "laboratory testing" in data["limitations"].lower()
+
+
+def test_analytics():
+    response = client.get("/analytics")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "total_predictions" in data
+    assert "average_predicted_bod5" in data
+    assert "minimum_predicted_bod5" in data
+    assert "maximum_predicted_bod5" in data
+    assert "status_counts" in data
+    assert "recent_predictions" in data
+
+
+def test_analytics_status_counts():
+    response = client.get("/analytics")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    status_counts = data["status_counts"]
+
+    assert "low" in status_counts
+    assert "moderate" in status_counts
+    assert "high" in status_counts
+    assert "very_high" in status_counts
+
+    assert status_counts["low"] >= 0
+    assert status_counts["moderate"] >= 0
+    assert status_counts["high"] >= 0
+    assert status_counts["very_high"] >= 0
+
+
+def test_analytics_recent_predictions():
+    response = client.get("/analytics")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    recent_predictions = data["recent_predictions"]
+
+    assert isinstance(recent_predictions, list)
+    assert len(recent_predictions) <= 10
+
+    for prediction in recent_predictions:
+        assert "id" in prediction
+        assert "predicted_effluent_bod5" in prediction
+        assert "created_at" in prediction
+
+
+def test_analytics_consistency():
+    response = client.get("/analytics")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    status_counts = data["status_counts"]
+
+    total_statuses = sum(status_counts.values())
+
+    assert total_statuses == data["total_predictions"]
+
+    if data["total_predictions"] > 0:
+        assert (
+            data["minimum_predicted_bod5"]
+            <= data["average_predicted_bod5"]
+            <= data["maximum_predicted_bod5"]
+        )

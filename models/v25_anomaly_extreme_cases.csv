@@ -1,0 +1,7 @@
+date,effluent_bod5,anomaly_score,anomaly_percentile,risk_band,top_0_5pct,top_1_0pct,top_2_0pct,top_3_0pct,top_5_0pct,elevated_or_higher,high_or_higher,critical
+D-14/3/90,320.0,0.5238922805511179,97.02380952380952,ELEVATED,False,False,False,True,True,True,False,False
+D-13/3/90,152.0,0.6632161459744907,100.0,CRITICAL,True,True,True,True,True,True,True,True
+D-17/7/91,105.0,0.6034338191878243,99.60317460317461,CRITICAL,True,True,True,True,True,True,True,True
+D-18/7/91,101.0,0.5528375044304891,98.61111111111111,ELEVATED,False,False,True,True,True,True,False,False
+D-19/7/91,101.0,0.5829513975020624,99.20634920634922,HIGH,False,True,True,True,True,True,True,False
+D-15/3/90,84.0,0.5733466031148381,99.0079365079365,HIGH,False,True,True,True,True,True,True,False

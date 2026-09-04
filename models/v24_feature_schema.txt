@@ -1,0 +1,36 @@
+WASTEWATER AI V2.4 FEATURE SCHEMA
+==================================================
+
+TARGET
+effluent_bod5
+
+RAW INFLUENT FEATURES
+flow_m3_day
+influent_zinc
+influent_ph
+influent_bod5
+influent_cod
+influent_tss
+influent_vss
+influent_sediments
+influent_conductivity
+
+ENGINEERED FEATURES
+bod5_loading
+cod_loading
+tss_loading
+vss_loading
+cod_bod5_ratio
+tss_bod5_ratio
+vss_tss_ratio
+sed_tss_ratio
+
+TOTAL FEATURES
+17
+
+VALIDATION
+Chronological 80/20 holdout
+TimeSeriesSplit cross-validation
+
+IMPORTANT
+No downstream/process/effluent variables are used as predictors.

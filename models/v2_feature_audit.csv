@@ -1,0 +1,39 @@
+column,category,leakage_risk,missing_count,non_missing_count,unique_values,recommendation
+Q-E,INFLUENT,LOW,18,509,503,CANDIDATE — available before treatment
+ZN-E,INFLUENT,LOW,3,524,168,CANDIDATE — available before treatment
+PH-E,INFLUENT,LOW,0,527,16,CANDIDATE — available before treatment
+DBO-E,INFLUENT,LOW,23,504,204,CANDIDATE — available before treatment
+DQO-E,INFLUENT,LOW,6,521,288,CANDIDATE — available before treatment
+SS-E,INFLUENT,LOW,1,526,141,CANDIDATE — available before treatment
+SSV-E,INFLUENT,LOW,11,516,274,CANDIDATE — available before treatment
+SED-E,INFLUENT,LOW,25,502,59,CANDIDATE — available before treatment
+COND-E,INFLUENT,LOW,0,527,414,CANDIDATE — available before treatment
+PH-P,PROCESS,MEDIUM,0,527,13,INVESTIGATE — may be usable if measurement is available before prediction time
+DBO-P,PROCESS,MEDIUM,40,487,225,INVESTIGATE — may be usable if measurement is available before prediction time
+SS-P,PROCESS,MEDIUM,0,527,154,INVESTIGATE — may be usable if measurement is available before prediction time
+SSV-P,PROCESS,MEDIUM,11,516,284,INVESTIGATE — may be usable if measurement is available before prediction time
+SED-P,PROCESS,MEDIUM,24,503,62,INVESTIGATE — may be usable if measurement is available before prediction time
+COND-P,PROCESS,MEDIUM,0,527,412,INVESTIGATE — may be usable if measurement is available before prediction time
+PH-D,PROCESS,MEDIUM,0,527,13,INVESTIGATE — may be usable if measurement is available before prediction time
+DBO-D,PROCESS,MEDIUM,28,499,148,INVESTIGATE — may be usable if measurement is available before prediction time
+DQO-D,PROCESS,MEDIUM,9,518,229,INVESTIGATE — may be usable if measurement is available before prediction time
+SS-D,PROCESS,MEDIUM,2,525,74,INVESTIGATE — may be usable if measurement is available before prediction time
+SSV-D,PROCESS,MEDIUM,13,514,242,INVESTIGATE — may be usable if measurement is available before prediction time
+SED-D,PROCESS,MEDIUM,25,502,22,INVESTIGATE — may be usable if measurement is available before prediction time
+COND-D,PROCESS,MEDIUM,0,527,410,INVESTIGATE — may be usable if measurement is available before prediction time
+PH-S,EFFLUENT,HIGH,1,526,15,EXCLUDE — downstream leakage
+DBO-S,TARGET,TARGET,23,504,43,TARGET — never use as predictor
+DQO-S,EFFLUENT,HIGH,18,509,136,EXCLUDE — downstream leakage
+SS-S,EFFLUENT,HIGH,5,522,57,EXCLUDE — downstream leakage
+SSV-S,EFFLUENT,HIGH,17,510,192,EXCLUDE — downstream leakage
+SED-S,EFFLUENT,HIGH,28,499,17,EXCLUDE — downstream leakage
+COND-S,EFFLUENT,HIGH,1,526,412,EXCLUDE — downstream leakage
+RD-DBO-P,DERIVED_PROCESS,MEDIUM,62,465,314,INVESTIGATE — verify whether calculation requires future/output data
+RD-SS-P,DERIVED_PROCESS,MEDIUM,4,523,307,INVESTIGATE — verify whether calculation requires future/output data
+RD-DBO-D,DERIVED_PROCESS,MEDIUM,27,500,143,INVESTIGATE — verify whether calculation requires future/output data
+RD-SS-D,DERIVED_PROCESS,MEDIUM,40,487,184,INVESTIGATE — verify whether calculation requires future/output data
+RD-DBO-G,DERIVED_PROCESS,MEDIUM,26,501,264,INVESTIGATE — verify whether calculation requires future/output data
+RD-SS-G,DERIVED_PROCESS,MEDIUM,36,491,155,INVESTIGATE — verify whether calculation requires future/output data
+RD-SED-G,DERIVED_PROCESS,MEDIUM,25,502,229,INVESTIGATE — verify whether calculation requires future/output data
+RD-N-NH4,DERIVED_PROCESS,MEDIUM,8,519,182,INVESTIGATE — verify whether calculation requires future/output data
+RD-N-NO2,DERIVED_PROCESS,MEDIUM,31,496,40,INVESTIGATE — verify whether calculation requires future/output data

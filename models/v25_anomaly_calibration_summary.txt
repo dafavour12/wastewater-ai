@@ -1,0 +1,46 @@
+WASTEWATER AI V2.5.1 ANOMALY CALIBRATION
+============================================================
+
+Raw dataset observations: 527
+Valid target observations: 504
+Removed target-missing observations: 23
+
+Detector: Isolation Forest
+Trees: 1000
+Input: 22 process variables
+Effluent variables excluded from detector input.
+
+Candidate risk bands:
+NORMAL: 0-90 percentile
+LOW: 90-97 percentile
+ELEVATED: 97-99 percentile
+HIGH: 99-99.5 percentile
+CRITICAL: 99.5-100 percentile
+
+Alarm budget thresholds:
+Top 0.5% cutoff score: 0.595086
+Top 1% cutoff score: 0.572845
+Top 2% cutoff score: 0.540723
+Top 3% cutoff score: 0.523822
+Top 5% cutoff score: 0.494869
+
+Extreme-event capture:
+Top 0.5%: 2/6 (33.3%)
+Top 1.0%: 4/6 (66.7%)
+Top 2.0%: 5/6 (83.3%)
+Top 3.0%: 6/6 (100.0%)
+Top 5.0%: 6/6 (100.0%)
+
+Extreme-case details:
+D-14/3/90: BOD5=320.0, percentile=97.024, risk=ELEVATED
+D-13/3/90: BOD5=152.0, percentile=100.000, risk=CRITICAL
+D-17/7/91: BOD5=105.0, percentile=99.603, risk=CRITICAL
+D-18/7/91: BOD5=101.0, percentile=98.611, risk=ELEVATED
+D-19/7/91: BOD5=101.0, percentile=99.206, risk=HIGH
+D-15/3/90: BOD5=84.0, percentile=99.008, risk=HIGH
+
+Interpretation:
+- Isolation Forest provides a useful research anomaly ranking.
+- Extreme BOD5 events are generally ranked as high-anomaly observations.
+- Alarm thresholds remain research candidates because only six BOD5>=50 observations exist.
+- The detector must not be treated as production validated without additional operational data.

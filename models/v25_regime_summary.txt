@@ -1,0 +1,38 @@
+WASTEWATER AI - V2.5 REGIME DETECTION
+============================================================
+
+Raw observations: 527
+Valid target observations: 504
+
+REGIME DEFINITIONS
+----------------------------------------
+normal: BOD5 < 30 mg/L
+elevated: 30 <= BOD5 < 50 mg/L
+extreme: BOD5 >= 50 mg/L
+
+REGIME COUNTS
+----------------------------------------
+normal: 469
+elevated: 29
+extreme: 6
+
+TEST-SET REGIME COUNTS
+----------------------------------------
+normal: 94
+elevated: 4
+extreme: 3
+
+BEST MODEL BY TIME-SERIES CV F1
+----------------------------------------
+Feature set: raw
+Model: Extra Trees
+CV F1 macro: 0.3888
+Holdout F1 macro: 0.3214
+Holdout accuracy: 0.9307
+Holdout macro recall: 0.3333
+
+FILES
+----------------------------------------
+C:\Users\l2e\Desktop\PROJECTS\wastewater-ai\models\v25_regime_model_comparison.csv
+C:\Users\l2e\Desktop\PROJECTS\wastewater-ai\models\v25_regime_predictions.csv
+C:\Users\l2e\Desktop\PROJECTS\wastewater-ai\models\v25_regime_summary.txt

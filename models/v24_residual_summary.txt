@@ -1,0 +1,30 @@
+WASTEWATER AI V2.4 RESIDUAL SUMMARY
+=======================================================
+
+CHRONOLOGICAL HOLDOUT
+Observations: 88
+MAE: 4.6523 mg/L
+RMSE: 5.4984 mg/L
+R2: 0.0512
+Mean signed error: -1.1710 mg/L
+Median signed error: -2.0044 mg/L
+Maximum absolute error: 13.5422 mg/L
+
+Prediction direction:
+Underpredictions: 40
+Overpredictions: 48
+Exact: 0
+
+RANDOM HOLDOUT
+Observations: 88
+MAE: 6.1350 mg/L
+RMSE: 15.1483 mg/L
+R2: 0.0349
+Mean signed error: 1.2653 mg/L
+Median signed error: -1.1478 mg/L
+Maximum absolute error: 132.0171 mg/L
+
+INTERPRETATION NOTES
+The chronological model tends to overpredict effluent BOD5.
+Chronological R2 is positive, indicating improvement over the mean predictor on this holdout.
+Final deployment decisions must consider error by operating range, not MAE alone.
